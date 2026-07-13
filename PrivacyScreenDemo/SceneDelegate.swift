@@ -11,6 +11,7 @@ final class SceneDelegate: NSObject, UIWindowSceneDelegate {
     
     func sceneWillResignActive(_ scene: UIScene) {
         guard let windowScene = scene as? UIWindowScene else { return }
+        if PrivacyScreenSuppression.isSuppressed { return }
         showPrivacyWindow(windowScene: windowScene)
     }
     
@@ -24,7 +25,7 @@ final class SceneDelegate: NSObject, UIWindowSceneDelegate {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         
         let newWindow = UIWindow(windowScene: windowScene)
-        newWindow.rootViewController = .init()
+        newWindow.rootViewController = PrivacyScreenViewController()
         newWindow.isHidden = false
         privacyWindow = newWindow
     }

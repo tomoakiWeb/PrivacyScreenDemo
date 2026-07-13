@@ -31,7 +31,13 @@ struct ContentView: View {
                 }
                 
                 Section {
-                    Button("カメラへのアクセスを許可") {}
+                    Button("カメラへのアクセスを許可") {
+                        Task {
+                            await PrivacyScreenSuppression.suppress(during: {
+                                _ = await AVCaptureDevice.requestAccess(for: .video)
+                            })
+                        }
+                    }
                     Button("アラートを表示") {
                         showAlert = true
                     }
