@@ -25,7 +25,9 @@ struct ContentView: View {
                 
                 Section {
                     Toggle("プライバシー画面を表示しない", isOn: $isSuppressing)
-                        .onChange(of: isSuppressing) { _, newValue in }
+                        .onChange(of: isSuppressing) { _, newValue in
+                            PrivacyScreenSuppression.setSuppressed(newValue)
+                        }
                 } footer: {
                     Text("ONにするとバックグラウンド遷移時にプライバシー画面が表示されません。")
                 }
