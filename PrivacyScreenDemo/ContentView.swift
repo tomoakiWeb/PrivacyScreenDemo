@@ -12,8 +12,8 @@ struct ContentView: View {
                 Section {
                     LabeledContent("Balance") {
                         Text("$1,234.56")
+                            .privacySensitive()
                     }
-                    .privacySensitive()
                     LabeledContent("Card Number") {
                         Text(verbatim: "1234 1234 1234 1234")
                             .privacySensitive()
