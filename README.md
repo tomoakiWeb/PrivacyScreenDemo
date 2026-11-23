@@ -25,8 +25,7 @@ Text("1234 1234 1234 1234")
 
 However, because it must be applied to each protected view individually, developers have to decide which information to hide. There is also a risk of forgetting to apply it when new screens are added in the future.
 
-<img width="239" height="115" alt="PrivacySensitive" src="https://github.com/user-attachments/assets/ff495bc4-1cc3-4c5b-b48b-69ea7d830f03" />
-
+<img width="202"  alt="PrivacySensitive" src="https://github.com/user-attachments/assets/3f636fd3-93f1-4423-affa-f156c472ee1f" />
 
 ---
 
@@ -169,13 +168,12 @@ enum PrivacyScreenSuppression {
     <th align="center">With System Alert</th>
   </tr>
   <tr>
-    <td align="center" width="25%"><video src="https://github.com/user-attachments/assets/33bc458a-0580-48f5-ae44-eadc02f54a7a" width="200"></td>
-    <td align="center" width="25%"><video src="https://github.com/user-attachments/assets/21a94b4c-b4b6-494f-a0e1-9eabf40c3ece" width="200"></td>
-    <td align="center" width="25%"><video src="https://github.com/user-attachments/assets/cab5def1-5fc1-4b5e-bf71-26df9a822797" width="200"></td>
-    <td align="center" width="25%"><video src="https://github.com/user-attachments/assets/7c605abd-fe3e-4af8-a79c-64b1cf2f9ca1" width="200"></td>
+    <td align="center" width="25%"><video src="https://github.com/user-attachments/assets/a11a2cea-8f54-4ecc-9019-255bf7e85714" width="200"></td>
+    <td align="center" width="25%"><video src="https://github.com/user-attachments/assets/3d8e02fb-da5f-4de9-ae10-86d101f12eef" width="200"></td>
+    <td align="center" width="25%"><video src="https://github.com/user-attachments/assets/a01d26da-47aa-4563-a577-6e96efa599b1" width="200"></td>
+    <td align="center" width="25%"><video src="https://github.com/user-attachments/assets/de3ff208-ea36-4a99-ba5d-4eca93776704" width="200"></td>
   </tr>
 </table>
-
 
 ## Summary
 Protecting information when moving to the background is an important, often-overlooked part of keeping users' sensitive data safe. This project implements two approaches: a simple one using `privacySensitive`, and one that presents a UIWindow in front of the app. The former is easy to adopt but risks being missed on some views, while the latter protects the entire app uniformly. We hope you find it useful.
