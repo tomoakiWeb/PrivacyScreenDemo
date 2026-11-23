@@ -1,40 +1,42 @@
 # PrivacyScreenDemo
 
-バックグラウンド遷移時の情報保護を実装したサンプルプロジェクトです。
+English | [日本語](README.ja.md)
 
-iOSDC Japan 2026「バックグラウンド遷移時の情報保護と安心感を高めるベストプラクティス」のサンプルコードです。
+A sample project that demonstrates how to protect sensitive information when an app moves to the background.
 
-## 概要
+This is the sample code for the iOSDC Japan 2026 talk "Best Practices for Protecting Information and Building User Trust When Moving to the Background".
 
-アプリがバックグラウンドに遷移する際、OSはアプリのスクリーンショットを保存します。アプリスイッチャーで機密情報が表示されるリスクを防ぐための実装を紹介しています。
+## Overview
 
-[Apple公式ドキュメント](https://developer.apple.com/documentation/uikit/preparing-your-ui-to-run-in-the-background)では、バックグラウンド移行時に機密情報をビューから削除することが求められています。
+When an app moves to the background, the OS takes a snapshot of its screen. This project shows how to prevent sensitive information from being exposed in the App Switcher.
 
-## 実装方針
+[Apple's official documentation](https://developer.apple.com/documentation/uikit/preparing-your-ui-to-run-in-the-background) asks apps to remove sensitive information from their views when moving to the background.
 
-### 方針1: `privacySensitive` を使った実装
+## Approaches
 
-SwiftUI のビューモディファイアで、そのビューに含まれる内容を保護します。バックグラウンドにアプリが遷移時に画像のようにグレー色のViewでマスクされます。
+### Approach 1: Using `privacySensitive`
+
+A SwiftUI view modifier that protects the content of the view it is applied to. When the app moves to the background, the content is masked with a gray view, as shown in the image below.
 
 ```swift
 Text("1234 1234 1234 1234")
     .privacySensitive()
 ```
 
-ただし、保護対象のビューに個別で付与する必要があるため、どの情報を隠すかを開発者が選定しなければなりません。また、将来的に新規画面を追加した際に付与漏れが発生するリスクがあります。
+However, because it must be applied to each protected view individually, developers have to decide which information to hide. There is also a risk of forgetting to apply it when new screens are added in the future.
 
 <img width="239" height="115" alt="PrivacySensitive" src="https://github.com/user-attachments/assets/ff495bc4-1cc3-4c5b-b48b-69ea7d830f03" />
 
 
 ---
 
-### 方針2: 全画面オーバーレイを使った実装
+### Approach 2: Using a Full-Screen Overlay
 
-アプリが非アクティブになるタイミングで UIWindow を前面に表示し、画面全体を隠す方法です。付与漏れが発生しないため、アプリ全体の機密情報を確実に保護できます。
+This approach presents a UIWindow in front of the app when it becomes inactive, hiding the entire screen. Since nothing needs to be applied per view, sensitive information across the whole app is reliably protected.
 
-#### セットアップ
+#### Setup
 
-SwiftUI アプリで `SceneDelegate` を使うには、`AppDelegate` の `application(_:configurationForConnecting:options:)` で `delegateClass` を指定します。
+To use a `SceneDelegate` in a SwiftUI app, set `delegateClass` in `AppDelegate`'s `application(_:configurationForConnecting:options:)`.
 
 ```swift
 // AppDelegate.swift
@@ -49,7 +51,7 @@ func application(
 }
 ```
 
-`@UIApplicationDelegateAdaptor` で `AppDelegate` を SwiftUI アプリに接続します。
+Connect the `AppDelegate` to the SwiftUI app with `@UIApplicationDelegateAdaptor`.
 
 ```swift
 // PrivacyScreenDemoApp.swift
@@ -65,9 +67,9 @@ struct PrivacyScreenDemoApp: App {
 }
 ```
 
-#### プライバシー画面の表示・非表示
+#### Showing and Hiding the Privacy Screen
 
-`sceneWillResignActive` はバックグラウンド移行・通知センター表示など、アプリが「非アクティブ」になる直前に呼ばれます。このタイミングでプライバシー画面を表示します。
+`sceneWillResignActive` is called right before the app becomes inactive, such as when moving to the background or when Notification Center is shown. The privacy screen is displayed at this point.
 
 ```swift
 // SceneDelegate.swift
@@ -82,7 +84,7 @@ func sceneDidBecomeActive(_ scene: UIScene) {
 }
 ```
 
-`showPrivacyWindow` では、復帰後に TextField のフォーカスを戻せるよう現在のファーストレスポンダーを保存してからキーボードを閉じます。その後、同じ `UIWindowScene` に新しい `UIWindow` を作成して前面に表示します。
+`showPrivacyWindow` saves the current first responder so that TextField focus can be restored when the app returns, then dismisses the keyboard. It then creates a new `UIWindow` in the same `UIWindowScene` and brings it to the front.
 
 ```swift
 private func showPrivacyWindow(windowScene: UIWindowScene) {
@@ -104,9 +106,9 @@ private func hidePrivacyWindow() {
 }
 ```
 
-#### プライバシー画面の UI
+#### Privacy Screen UI
 
-プライバシー画面は SwiftUI の View を `UIHostingController` でラップして表示します。
+The privacy screen is a SwiftUI view wrapped in a `UIHostingController`.
 
 ```swift
 // PrivacyScreenView.swift
@@ -132,12 +134,12 @@ final class PrivacyScreenViewController: UIHostingController<PrivacyScreenView> 
 }
 ```
 
-#### プライバシー画面の抑制
+#### Suppressing the Privacy Screen
 
-カメラ許可ダイアログなど、意図的にシステム UI を前面に表示する操作中はプライバシー画面を表示したくない場合があります。`PrivacyScreenSuppression` を使うと、処理の実行中だけ抑制できます。
+You may not want to show the privacy screen during operations that intentionally bring system UI to the front, such as the camera permission dialog. `PrivacyScreenSuppression` lets you suppress it only while an operation is running.
 
 ```swift
-// 抑制中はプライバシー画面が表示されない
+// The privacy screen is not shown while suppressed
 await PrivacyScreenSuppression.suppress {
     await requestCameraPermission()
 }
@@ -157,14 +159,14 @@ enum PrivacyScreenSuppression {
 }
 ```
 
-#### 動作確認
+#### Demo
 
 <table>
   <tr>
-    <th align="center">通常時</th>
-    <th align="center">Alertを表示時</th>
-    <th align="center">キーボード表示時</th>
-    <th align="center">システムアラート表示時</th>
+    <th align="center">Normal</th>
+    <th align="center">With Alert</th>
+    <th align="center">With Keyboard</th>
+    <th align="center">With System Alert</th>
   </tr>
   <tr>
     <td align="center" width="25%"><video src="https://github.com/user-attachments/assets/33bc458a-0580-48f5-ae44-eadc02f54a7a" width="200"></td>
@@ -175,13 +177,5 @@ enum PrivacyScreenSuppression {
 </table>
 
 
-## まとめ
-バックグラウンド遷移時の情報保護は、ユーザーの機密情報を守るうえで見落とされがちな重要な実装です。本プロジェクトでは `privacySensitive` を用いたシンプルな実装と、アプリ最前面に UIWindow を表示する方法の2つの方針を実装しました。前者は手軽に導入できる一方で付与漏れのリスクがあり、後者はアプリ全体を一律に保護できます。ぜひ参考にしてみてください。
-
-
-
-
-
-
-
-
+## Summary
+Protecting information when moving to the background is an important, often-overlooked part of keeping users' sensitive data safe. This project implements two approaches: a simple one using `privacySensitive`, and one that presents a UIWindow in front of the app. The former is easy to adopt but risks being missed on some views, while the latter protects the entire app uniformly. We hope you find it useful.

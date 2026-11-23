@@ -10,48 +10,52 @@ struct ContentView: View {
         NavigationStack {
             List {
                 Section {
-                    LabeledContent("残高", value: "¥123,456")
-                        .privacySensitive()
-                    LabeledContent("カード番号") {
-                        Text("1234 1234 1234 1234")
+                    LabeledContent("Balance") {
+                        Text("$1,234.56")
+                    }
+                    .privacySensitive()
+                    LabeledContent("Card Number") {
+                        Text(verbatim: "1234 1234 1234 1234")
                             .privacySensitive()
                     }
-                    LabeledContent("氏名", value: "山田 太郎")
+                    LabeledContent("Name") {
+                        Text("John Appleseed")
+                    }
                 }
                 .font(.body.monospacedDigit())
                 
                 Section {
-                    TextField("テキストを入力", text: $inputText)
+                    TextField("Enter text", text: $inputText)
                 }
                 
                 Section {
-                    Toggle("プライバシー画面を表示しない", isOn: $isSuppressing)
+                    Toggle("Disable Privacy Screen", isOn: $isSuppressing)
                         .onChange(of: isSuppressing) { _, newValue in
                             PrivacyScreenSuppression.setSuppressed(newValue)
                         }
                 } footer: {
-                    Text("ONにするとバックグラウンド遷移時にプライバシー画面が表示されません。")
+                    Text("When enabled, the privacy screen will not be shown when the app moves to the background.")
                 }
                 
                 Section {
-                    Button("カメラへのアクセスを許可") {
+                    Button("Allow Camera Access") {
                         Task {
                             await PrivacyScreenSuppression.suppress(during: {
                                 _ = await AVCaptureDevice.requestAccess(for: .video)
                             })
                         }
                     }
-                    Button("アラートを表示") {
+                    Button("Show Alert") {
                         showAlert = true
                     }
                 }
             }
             .scrollDismissesKeyboard(.immediately)
-            .navigationTitle("サンプル")
-            .alert("確認", isPresented: $showAlert) {
+            .navigationTitle("Sample")
+            .alert("Confirmation", isPresented: $showAlert) {
                 Button("OK", role: .cancel) {}
             } message: {
-                Text("アラートのメッセージです。")
+                Text("This is an alert message.")
             }
         }
     }
