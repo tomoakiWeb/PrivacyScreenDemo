@@ -11,6 +11,7 @@ struct ContentView: View {
             List {
                 Section {
                     LabeledContent("残高", value: "¥123,456")
+                        .privacySensitive()
                     LabeledContent("カード番号") {
                         Text("1234 1234 1234 1234")
                             .privacySensitive()
